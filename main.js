@@ -23,3 +23,33 @@ function getKnightMoves(x, y) {
 
   return validMoves;
 }
+
+function knightCanReach(start, target) {
+  const queue = [start];
+  const visited = new Set();
+
+  visited.add(start.toString());
+
+  while (queue.length > 0) {
+    const [x, y] = queue.shift();
+
+    if (x === target[0] && y === target[1]) {
+      return true;
+    }
+
+    const moves = getKnightMoves(x, y);
+
+    for (const move of moves) {
+      const key = move.toString();
+
+      if (!visited.has(key)) {
+        visited.add(key);
+        queue.push(move);
+      }
+    }
+  }
+
+  return false;
+}
+
+console.log(knightCanReach([0, 0], [7, 7]));
