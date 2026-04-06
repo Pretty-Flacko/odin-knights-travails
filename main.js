@@ -24,17 +24,41 @@ function getKnightMoves(x, y) {
   return validMoves;
 }
 
-function knightCanReach(start, target) {
+function reconstructPath(parent, start, target) {
+  const path = [];
+  let current = target.toString();
+
+  while (current !== start.toString()) {
+    const [x, y] = current.split(",").map(Number);
+    path.push([x, y]);
+    current = parent[current];
+  }
+
+  path.push(start);
+
+  return path.reverse();
+}
+
+function knightMoves(start, target) {
   const queue = [start];
   const visited = new Set();
+  const parent = {};
 
   visited.add(start.toString());
 
   while (queue.length > 0) {
     const [x, y] = queue.shift();
+    const currentKey = [x, y].toString();
 
     if (x === target[0] && y === target[1]) {
-      return true;
+      const shortestPath = reconstructPath(parent, start, target);
+      console.log(
+        "You made it in",
+        shortestPath.length - 1,
+        "moves! Here's your path:",
+      );
+      console.log(shortestPath);
+      return shortestPath;
     }
 
     const moves = getKnightMoves(x, y);
@@ -45,11 +69,11 @@ function knightCanReach(start, target) {
       if (!visited.has(key)) {
         visited.add(key);
         queue.push(move);
+
+        parent[key] = currentKey;
       }
     }
   }
-
-  return false;
 }
 
-console.log(knightCanReach([0, 0], [7, 7]));
+knightMoves([3, 3], [4, 3]);
